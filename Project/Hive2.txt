@@ -1,0 +1,54 @@
+Microsoft Windows [Version 10.0.19044.1706]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\AbhishekMondal>docker container run -it -p 9870:9870 -p 8088:8088 registry.gitlab.com/training-support/training-environments:hadoop-v1 bash
+/
+ * Starting OpenBSD Secure Shell server sshd                                                                     [ OK ]
+Waiting for hdfs to exit from safemode
+Safe mode is OFF
+Started
+root@34d7601a9e42:/# vim episodeIV_dialouges.txt
+root@34d7601a9e42:/# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop-3.3.1/share/hadoop/common/lib/slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Hive Session ID = ac160633-992f-4eac-a614-1bf0b47a2038
+
+Logging initialized using configuration in jar:file:/usr/local/apache-hive-3.1.2-bin/lib/hive-common-3.1.2.jar!/hive-log4j2.properties Async: true
+Hive Session ID = 6dd55ee8-c5b8-4dbf-bc47-b4904d43ffab
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> CREATE TABLE episodeIV (name STRING, line STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' TBLPROPERTIES ("skip.header.line.count"="2");
+OK
+Time taken: 1.735 seconds
+hive> LOAD DATA LOCAL INPATH '/episodeIV_dialouges.txt' INTO TABLE episodeIV;
+Loading data to table default.episodeiv
+OK
+Time taken: 1.585 seconds
+hive> select count(*) from episodeIV where line like '%Luke%';
+Query ID = root_20220601193013_71e73970-f3e6-43a3-9fed-585d7ee6fe2f
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1654111632994_0001, Tracking URL = http://34d7601a9e42:8088/proxy/application_1654111632994_0001/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1654111632994_0001
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2022-06-01 19:30:31,086 Stage-1 map = 0%,  reduce = 0%
+2022-06-01 19:30:38,441 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 4.11 sec
+2022-06-01 19:30:45,850 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 8.43 sec
+MapReduce Total cumulative CPU time: 8 seconds 430 msec
+Ended Job = job_1654111632994_0001
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 8.43 sec   HDFS Read: 81173 HDFS Write: 102 SUCCESS
+Total MapReduce CPU Time Spent: 8 seconds 430 msec
+OK
+56
+Time taken: 33.222 seconds, Fetched: 1 row(s)
+hive>
